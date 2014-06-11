@@ -1,6 +1,7 @@
 fs = require 'fs'
 jade = require 'jade'
 util = require 'util'
+request = require 'request'
 
 module.exports = (grunt) ->
   
@@ -89,20 +90,30 @@ module.exports = (grunt) ->
       #   livereload: reloadPort
       # files: ["**/*"]
       #   tasks: ["jshint"]
+      # options:
+      #   nospawn: true
+        # livereload: 3000
       coffee:
         files: "server/**/*.coffee"
-        tasks: 'development'
+        tasks: [
+          # 'development'
+          "development"
+          # 'express-keepalive'
+          # 'watch'
+          "delayed-livereload"
+        ]
         options:
           livereload: true
 
       js:
           files: [
             "app.js"
-            "app/**/*.js"
+            "client/**/*.js"
+            "server/**/*.js"
             "config/*.js"
           ]
           tasks: [
-            "develop"
+            "development"
             "delayed-livereload"
           ]
       # jade:
@@ -136,6 +147,7 @@ module.exports = (grunt) ->
   grunt.registerTask "delayed-livereload", "Live reload after the node server has restarted.", ->
     console.log "reload....."
     done = @async()
+    # console.log this
     setTimeout (->
       request.get "http://localhost:" + reloadPort + "/changed?files=" + files.join(","), (err, res) ->
         reloaded = not err and res.statusCode is 200
