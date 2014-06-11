@@ -22,6 +22,8 @@ module.exports = (grunt) ->
   JS_DEV_BUILD_PATH = "#{DEV_BUILD_PATH}/js"
   PRODUCTION_BUILD_PATH = "#{BUILD_PATH}/production"
   SERVER_PATH = "server"
+
+  reloadPort = 35729
   
   grunt.initConfig
 
@@ -82,11 +84,27 @@ module.exports = (grunt) ->
           "server/client_build/development/stylesheets/main.css": "client/scss/main.scss"
     
     watch:
+      # options:
+      #   nospawn: true
+      #   livereload: reloadPort
+      # files: ["**/*"]
+      #   tasks: ["jshint"]
       coffee:
-        files: "#{APP_PATH}/coffee/**/*.coffee"
+        files: "server/**/*.coffee"
         tasks: 'development'
         options:
           livereload: true
+
+      js:
+          files: [
+            "app.js"
+            "app/**/*.js"
+            "config/*.js"
+          ]
+          tasks: [
+            "develop"
+            "delayed-livereload"
+          ]
       # jade:
       #   files: "#{TEMPLATES_PATH}/**/*.jade"
       #   tasks: 'clientTemplates'
@@ -111,6 +129,26 @@ module.exports = (grunt) ->
       tmplFileContents += "JST['#{namespace}'] = #{contents};\n"
       
     fs.writeFileSync "#{JS_DEV_BUILD_PATH}/templates.js", tmplFileContents
+
+  grunt.config.requires "watch.js.files"
+  files = grunt.config("watch.js.files")
+  files = grunt.file.expand(files)
+  grunt.registerTask "delayed-livereload", "Live reload after the node server has restarted.", ->
+    console.log "reload....."
+    done = @async()
+    setTimeout (->
+      request.get "http://localhost:" + reloadPort + "/changed?files=" + files.join(","), (err, res) ->
+        reloaded = not err and res.statusCode is 200
+        if reloaded
+          grunt.log.ok "Delayed live reload successful."
+        else
+          grunt.log.error "Unable to make a delayed live reload."
+        done reloaded
+        return
+
+      return
+    ), 500
+    return
         
   grunt.registerTask 'test', [
     'development'

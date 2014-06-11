@@ -11,7 +11,7 @@ publicController.index = (req, res) ->
 	res.json
 		msgId: "msg.fileName"
 		name: "bob"	
-		age: 4311
+		age: 43342343244001113242411225532243
 
 publicController.about = (req, res) ->    
 	res.render 'public/about'    
