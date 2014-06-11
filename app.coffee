@@ -3,7 +3,7 @@ passport = require 'passport'
 mongoose = require 'mongoose'
 compression = require 'compression'
 morgan = require 'morgan'
-livereload = require 'express-livereload'
+# livereload = require 'express-livereload'
 
 ASSET_BUILD_PATH = 'server/client_build/development'
 PORT = process.env.PORT ? 3000
@@ -20,7 +20,7 @@ publicController = require './server/controllers/public_controller'
   
 app = express()
 
-livereload(app, config={})
+# livereload(app, config={})
 
 # removing for 3.0 to 4.0 migration
 # app.configure ->

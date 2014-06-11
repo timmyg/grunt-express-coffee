@@ -69,12 +69,12 @@ module.exports = (grunt) ->
           server: './app'
           port: 3000
           # livereload: true
-    livereload:
-      options:
-        server: "server"
-        livereload: true
-        serverreload: true
-        bases: "./public"
+    # livereload:
+    #   options:
+    #     server: "server"
+    #     livereload: true
+    #     serverreload: true
+    #     bases: "./public"
     
     sass:
       development:
@@ -130,6 +130,6 @@ module.exports = (grunt) ->
     # 'env:development'
     'development'
     'express:development'
-    'express-keepalive'
+    # 'express-keepalive'
     'watch'
   ]
